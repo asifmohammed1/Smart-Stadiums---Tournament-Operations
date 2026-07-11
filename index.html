@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!--
+    FIFA World Cup 2026 · Smart Stadium & Tournament Operations Hub
+    Author:  Asif | AntiGravity
+    Version: 2.0.0
+    GitHub:  https://github.com/your-repo
+
+    Google Services used:
+      · Google Gemini AI (gemini-2.0-flash-exp)
+      · Google Maps Embed API
+      · Google Analytics 4 (gtag.js)
+      · Google Tag Manager
+      · Google Fonts (Outfit + Inter)
+      · Google Cloud (conceptual backend)
+  -->
+
+  <!-- ── Character set & viewport ───────────────────────────────── -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- ── SEO meta ───────────────────────────────────────────────── -->
+  <meta name="description"
+        content="AI-powered smart stadium assistant for FIFA World Cup 2026. Real-time navigation, crowd management, multilingual support, and sustainability tracking powered by Google Gemini." />
+  <meta name="keywords"
+        content="FIFA World Cup 2026, Smart Stadium, AI Assistant, Google Gemini, Crowd Management, Navigation, Sustainability, Accessibility" />
+  <meta name="author" content="Asif | AntiGravity" />
+  <meta name="robots" content="index, follow" />
+
+  <!-- ── Open Graph ─────────────────────────────────────────────── -->
+  <meta property="og:title"       content="FIFA 2026 · Smart Stadium AI Hub" />
+  <meta property="og:description" content="GenAI-powered stadium operations for FIFA World Cup 2026" />
+  <meta property="og:type"        content="website" />
+
+  <!-- ── Page title ─────────────────────────────────────────────── -->
+  <title>FIFA 2026 · Smart Stadium AI Hub</title>
+
+  <!-- ── Google Fonts ───────────────────────────────────────────── -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- ── Stylesheet ─────────────────────────────────────────────── -->
+  <link rel="stylesheet" href="css/styles.css" />
+
+  <!-- ── Google Tag Manager ────────────────────────────────────── -->
+  <script>
+    (function(w,d,s,l,i){
+      w[l]=w[l]||[];
+      w[l].push({'gtm.start': new Date().getTime(), event:'gtm.js'});
+      var f=d.getElementsByTagName(s)[0],
+          j=d.createElement(s),
+          dl=l!='dataLayer'?'&l='+l:'';
+      j.async=true;
+      j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
+      f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-XXXXXXX');
+  </script>
+
+  <!-- ── Google Analytics 4 ────────────────────────────────────── -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX', { anonymize_ip: true });
+  </script>
+</head>
+
+<body>
+  <!-- ── Google Tag Manager (noscript) ──────────────────────────── -->
+  <noscript>
+    <iframe
+      src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX"
+      height="0" width="0"
+      style="display:none;visibility:hidden"
+      title="Google Tag Manager"
+    ></iframe>
+  </noscript>
+
+  <!-- ── No-JS fallback ─────────────────────────────────────────── -->
+  <noscript>
+    <div style="background:#0e1528;color:#f0f4ff;padding:24px;font-family:sans-serif;text-align:center">
+      <h1>⚽ FIFA 2026 Smart Stadium AI Hub</h1>
+      <p>This application requires JavaScript to function. Please enable JavaScript in your browser.</p>
+      <p>For immediate stadium assistance, call: <strong>+1-800-FIFA-911</strong></p>
+    </div>
+  </noscript>
+
+  <!-- ── Accessibility skip link ────────────────────────────────── -->
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <!-- ── Toast notification area ───────────────────────────────── -->
+  <div id="toast-area" role="region" aria-label="System notifications" aria-live="polite"></div>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       HEADER
+  ══════════════════════════════════════════════════════════════ -->
+  <header role="banner">
+    <nav aria-label="Main navigation">
+      <a href="#" class="nav-logo" aria-label="FIFA 2026 Smart Stadium Hub — home">
+        <div class="nav-logo-icon" aria-hidden="true">🏟️</div>
+        <span>FIFA 2026 <span style="color:var(--accent-cyan)">AI Hub</span></span>
+      </a>
+
+      <div class="nav-links" role="list">
+        <button type="button" class="nav-link active"   onclick="scrollSection('hero')"             role="listitem">Home</button>
+        <button type="button" class="nav-link"          onclick="scrollSection('ai-section')"       role="listitem">AI Assistant</button>
+        <button type="button" class="nav-link"          onclick="scrollSection('crowd-section')"    role="listitem">Crowd</button>
+        <button type="button" class="nav-link"          onclick="scrollSection('nav-section')"      role="listitem">Navigate</button>
+        <button type="button" class="nav-link"          onclick="scrollSection('transport-section')" role="listitem">Transport</button>
+        <button type="button" class="nav-link"          onclick="scrollSection('sustain-section')"  role="listitem">Eco</button>
+        <button type="button" class="nav-link"          onclick="scrollSection('access-section')"   role="listitem">Accessibility</button>
+      </div>
+
+      <div class="nav-right">
+        <button
+          type="button"
+          class="nav-lang-btn"
+          id="lang-toggle-btn"
+          onclick="cycleLang()"
+          aria-label="Change display language"
+          title="Cycle through languages"
+        >
+          🌐 <span id="lang-display">EN</span>
+        </button>
+        <button type="button" class="btn btn-primary btn-sm" onclick="openAIAssistant()">
+          ✨ Ask AI
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       MAIN CONTENT
+  ══════════════════════════════════════════════════════════════ -->
+  <main id="main-content" tabindex="-1">
+
+    <!-- ─────────────────────────────────────────────────────────────
+         HERO
+    ───────────────────────────────────────────────────────────── -->
+    <section id="hero" aria-labelledby="hero-heading">
+      <div class="container">
+        <div class="hero-grid">
+
+          <!-- Left — copy -->
+          <div>
+            <div class="hero-eyebrow">
+              <span class="badge badge-red"><span class="pulse pulse-red" aria-hidden="true"></span>LIVE · FIFA WORLD CUP 2026</span>
+              <span class="badge badge-cyan">Powered by Gemini AI</span>
+            </div>
+
+            <h1 class="hero-title" id="hero-heading">
+              Smart Stadium<br />
+              <span class="grad-text">Operations Hub</span>
+            </h1>
+
+            <p class="hero-sub">
+              AI-powered intelligence for seamless tournament experiences — real-time crowd management,
+              multilingual assistance, smart navigation, and sustainability tracking for fans, staff &amp; organizers.
+            </p>
+
+            <!-- Match countdown — real-time decision support -->
+            <div style="margin-bottom:24px">
+              <div style="font-size:12px;color:var(--text-muted);margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:1px">
+                ⏱ Opening Match Countdown
+              </div>
+              <div id="countdown-display"
+                   style="font-family:var(--font-head);font-size:22px;font-weight:800;color:var(--accent-cyan)"
+                   aria-label="Countdown to FIFA 2026 opening match"
+                   aria-live="off">
+                Calculating…
+              </div>
+            </div>
+
+            <div class="hero-ctas">
+              <button type="button" class="btn btn-primary" onclick="openAIAssistant()" id="hero-ai-btn">
+                🤖 AI Assistant
+              </button>
+              <button type="button" class="btn btn-ghost" onclick="scrollSection('crowd-section')">
+                📊 Live Dashboard
+              </button>
+            </div>
+
+            <div class="hero-stats" role="region" aria-label="Tournament statistics">
+              <div class="hero-stat">
+                <div class="hero-stat-num" id="stat-fans" aria-label="Fans today: 87,432">87,432</div>
+                <div class="hero-stat-label">Fans Today</div>
+              </div>
+              <div class="hero-stat">
+                <div class="hero-stat-num">16</div>
+                <div class="hero-stat-label">Host Venues</div>
+              </div>
+              <div class="hero-stat">
+                <div class="hero-stat-num">48</div>
+                <div class="hero-stat-label">Nations</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right — animated orb -->
+          <div class="hero-visual" aria-hidden="true">
+            <div class="stadium-orb">
+              <div class="orb-ring"></div>
+              <div class="orb-ring-2"></div>
+              <div class="orb-inner">🏆</div>
+            </div>
+            <div class="float-card top-left"><span class="pulse"></span> Gate A — 23% capacity</div>
+            <div class="float-card top-right">🌍 48 Languages Supported</div>
+            <div class="float-card bot-left">♻️ 94% Renewable Energy</div>
+            <div class="float-card bot-right">🚌 Next shuttle: 4 min</div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────────────────────────────────────────
+         AI ASSISTANT
+    ───────────────────────────────────────────────────────────── -->
+    <section id="ai-section" aria-labelledby="ai-heading">
+      <div class="container">
+
+        <div class="section-head reveal">
+          <p class="section-label">✨ Gemini AI</p>
+          <h2 class="section-title" id="ai-heading">
+            Multilingual AI<br /><span class="grad-text">Stadium Assistant</span>
+          </h2>
+          <p class="section-sub">
+            Ask anything in your language — navigation, match schedules, accessibility, transport,
+            food &amp; beverages, or emergency help. Powered by Google Gemini 2.0.
+          </p>
+        </div>
+
+        <div class="chat-container reveal" role="region" aria-label="AI Chat Assistant">
+
+          <!-- Chat header -->
+          <div class="chat-header">
+            <div class="chat-header-info">
+              <div class="chat-avatar" aria-hidden="true">🤖</div>
+              <div>
+                <div class="chat-avatar-name">StadiumAI · Gemini</div>
+                <div class="chat-avatar-sub">
+                  <span class="pulse" style="display:inline-block;width:6px;height:6px;vertical-align:middle;margin-right:4px" aria-hidden="true"></span>
+                  Online · Responds in your language
+                </div>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <span class="badge badge-cyan">48 Languages</span>
+              <span class="badge badge-green">Gemini 2.0</span>
+            </div>
+          </div>
+
+          <!-- Messages log -->
+          <div
+            class="chat-messages"
+            id="chat-messages"
+            role="log"
+            aria-live="polite"
+            aria-label="Chat messages"
+            aria-atomic="false"
+          >
+            <div class="msg msg-bot">
+              <div class="msg-label">StadiumAI</div>
+              <div class="msg-bubble">
+                🏆 Welcome to FIFA World Cup 2026! I'm your AI-powered stadium assistant, here to help with
+                navigation, match info, accessibility, food &amp; beverages, transportation, safety, and more.<br/><br/>
+                You can ask me in <strong>any language</strong> — I understand 48 languages including English,
+                Spanish, French, Arabic, Portuguese, German, Japanese, and many more.<br/><br/>
+                How can I assist you today?
+              </div>
+              <div class="msg-attribution">
+                <span aria-hidden="true">🤖</span>
+                <span>Powered by Google Gemini 2.0 · AI-generated, verify with staff for critical info</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick prompts -->
+          <div class="chat-quick-prompts" role="region" aria-label="Suggested questions">
+            <button type="button" class="quick-chip" aria-label="Ask about nearest restroom">🚻 Nearest restroom?</button>
+            <button type="button" class="quick-chip" aria-label="Ask about next match">⚽ Next match schedule</button>
+            <button type="button" class="quick-chip" aria-label="Ask about shuttle bus">🚌 Shuttle bus timings</button>
+            <button type="button" class="quick-chip" aria-label="Ask about accessible entry">♿ Accessible entry gates</button>
+            <button type="button" class="quick-chip" aria-label="Ask about parking">🅿️ Parking availability</button>
+            <button type="button" class="quick-chip" aria-label="Ask about halal food">🍔 Halal food options?</button>
+            <button type="button" class="quick-chip" aria-label="Request emergency help">🆘 Emergency help</button>
+            <button type="button" class="quick-chip" aria-label="Ask about fan zone">🎉 Fan Zone location</button>
+          </div>
+
+          <!-- Input row -->
+          <div class="chat-input-row">
+            <label for="chat-lang" class="sr-only">Response language</label>
+            <select class="lang-select" id="chat-lang" aria-label="Select language for AI response">
+              <option value="en">🇺🇸 EN</option>
+              <option value="es">🇪🇸 ES</option>
+              <option value="fr">🇫🇷 FR</option>
+              <option value="ar">🇸🇦 AR</option>
+              <option value="pt">🇧🇷 PT</option>
+              <option value="de">🇩🇪 DE</option>
+              <option value="ja">🇯🇵 JA</option>
+              <option value="zh">🇨🇳 ZH</option>
+              <option value="hi">🇮🇳 HI</option>
+              <option value="ko">🇰🇷 KO</option>
+              <option value="ru">🇷🇺 RU</option>
+              <option value="it">🇮🇹 IT</option>
+            </select>
+
+            <label for="chat-input" class="sr-only">Message to AI assistant</label>
+            <textarea
+              class="input"
+              id="chat-input"
+              placeholder="Ask anything about the stadium, match, or your visit…"
+              rows="2"
+              aria-label="Type your message to the AI assistant"
+              autocomplete="off"
+              spellcheck="true"
+              maxlength="1000"
+            ></textarea>
+
+            <button type="button" class="btn btn-cyan" id="send-btn" aria-label="Send message">
+              ➤ Send
+            </button>
+          </div>
+        </div>
+
+        <!-- API key notice -->
+        <div class="api-notice" role="note" aria-label="Developer integration note">
+          <p>
+            ⚙️ <strong style="color:var(--brand-gold)">Integration Note:</strong>
+            Replace <code style="background:rgba(255,255,255,0.06);padding:2px 6px;border-radius:4px">YOUR_GEMINI_API_KEY</code>
+            in <code>js/config.js</code> with your Google AI Studio key for live AI responses.
+            Demo mode uses pre-scripted intelligent answers.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <div class="divider" role="separator"></div>
+
+    <!-- ─────────────────────────────────────────────────────────────
+         CROWD MANAGEMENT
+    ───────────────────────────────────────────────────────────── -->
+    <section id="crowd-section" aria-labelledby="crowd-heading">
+      <div class="container">
+
+        <div class="section-head reveal">
+          <p class="section-label">📊 Live Intelligence</p>
+          <h2 class="section-title" id="crowd-heading">
+            Crowd Management<br /><span class="grad-text">&amp; Zone Control</span>
+          </h2>
+          <p class="section-sub">
+            Real-time density monitoring across all zones. AI predicts congestion 15 minutes ahead
+            and recommends re-routing, gate openings, and staff deployment.
+          </p>
+        </div>
+
+        <div class="stadium-map-wrap reveal">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:center">
+
+            <!-- SVG Stadium Map -->
+            <div class="stadium-svg-wrap" role="img" aria-label="Interactive stadium crowd density map — click a zone for details">
+              <svg viewBox="0 0 400 320" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%" aria-hidden="true" focusable="false">
+                <!-- Pitch -->
+                <ellipse cx="200" cy="160" rx="120" ry="80" fill="#1a3a1a" stroke="#2d5a2d" stroke-width="1.5"/>
+                <ellipse cx="200" cy="160" rx="80"  ry="50" fill="none" stroke="#2d5a2d" stroke-width="1"/>
+                <circle  cx="200" cy="160" r="20"   fill="none" stroke="#2d5a2d" stroke-width="1"/>
+                <text x="200" y="165" text-anchor="middle" font-size="10" fill="#4a7a4a">PITCH</text>
+
+                <!-- North Stand -->
+                <rect x="100" y="30" width="200" height="55" rx="8"
+                  fill="rgba(245,180,0,0.2)" stroke="#f5b400" stroke-width="1.5"
+                  class="crowd-zone"
+                  onclick="showZoneInfo('North Stand','72%','gold')"
+                  tabindex="0" role="button"
+                  aria-label="North Stand — 72% capacity, moderate density"
+                  aria-describedby="zone-info-panel"
+                />
+                <text x="200" y="52" text-anchor="middle" font-size="11" fill="#f5b400" font-weight="600" pointer-events="none">NORTH STAND</text>
+                <text x="200" y="68" text-anchor="middle" font-size="10" fill="#f5b400" pointer-events="none">72% · Moderate</text>
+
+                <!-- South Stand -->
+                <rect x="100" y="235" width="200" height="55" rx="8"
+                  fill="rgba(232,0,45,0.2)" stroke="#e8002d" stroke-width="1.5"
+                  class="crowd-zone"
+                  onclick="showZoneInfo('South Stand','94%','red')"
+                  tabindex="0" role="button"
+                  aria-label="South Stand — 94% capacity, critical density, AI action required"
+                  aria-describedby="zone-info-panel"
+                />
+                <text x="200" y="257" text-anchor="middle" font-size="11" fill="#e8002d" font-weight="600" pointer-events="none">SOUTH STAND</text>
+                <text x="200" y="273" text-anchor="middle" font-size="10" fill="#e8002d" pointer-events="none">94% · HIGH ⚠️</text>
+
+                <!-- East Stand -->
+                <rect x="315" y="100" width="60" height="120" rx="8"
+                  fill="rgba(0,230,118,0.15)" stroke="#00e676" stroke-width="1.5"
+                  class="crowd-zone"
+                  onclick="showZoneInfo('East Stand','38%','green')"
+                  tabindex="0" role="button"
+                  aria-label="East Stand — 38% capacity, low density"
+                  aria-describedby="zone-info-panel"
+                />
+                <text x="345" y="155" text-anchor="middle" font-size="9" fill="#00e676" font-weight="600"
+                  transform="rotate(-90,345,155)" pointer-events="none">EAST · 38%</text>
+
+                <!-- West Stand -->
+                <rect x="25" y="100" width="60" height="120" rx="8"
+                  fill="rgba(0,212,255,0.15)" stroke="#00d4ff" stroke-width="1.5"
+                  class="crowd-zone"
+                  onclick="showZoneInfo('West Stand','61%','cyan')"
+                  tabindex="0" role="button"
+                  aria-label="West Stand — 61% capacity, normal density"
+                  aria-describedby="zone-info-panel"
+                />
+                <text x="55" y="155" text-anchor="middle" font-size="9" fill="#00d4ff" font-weight="600"
+                  transform="rotate(-90,55,155)" pointer-events="none">WEST · 61%</text>
+
+                <!-- VIP Box -->
+                <rect x="155" y="105" width="90" height="30" rx="6"
+                  fill="rgba(150,80,255,0.2)" stroke="#9650ff" stroke-width="1.5"
+                  class="crowd-zone"
+                  onclick="showZoneInfo('VIP Box','55%','purple')"
+                  tabindex="0" role="button"
+                  aria-label="VIP Box — 55% capacity"
+                  aria-describedby="zone-info-panel"
+                />
+                <text x="200" y="124" text-anchor="middle" font-size="9" fill="#9650ff" font-weight="700" pointer-events="none">VIP 55%</text>
+              </svg>
+            </div>
+
+            <!-- Zone detail panel -->
+            <div>
+              <div id="zone-info-panel" aria-live="polite" aria-label="Zone detail panel">
+                <div class="card" style="border-color:rgba(232,0,45,0.3)">
+                  <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+                    <span style="font-size:20px" aria-hidden="true">⚠️</span>
+                    <div>
+                      <div style="font-family:var(--font-head);font-size:15px;font-weight:700">South Stand — Critical</div>
+                      <div style="font-size:12px;color:var(--text-muted)">AI Action Required</div>
+                    </div>
+                    <span class="badge badge-red" style="margin-left:auto">94%</span>
+                  </div>
+                  <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px">
+                    Crowd density approaching critical threshold. AI recommends opening overflow
+                    gates B7 and B8, and rerouting incoming fans via West Stand concourse.
+                  </p>
+                  <div style="display:flex;gap:8px">
+                    <button type="button" class="btn btn-primary btn-sm"
+                      onclick="aiRecommendAction('Open Gates B7-B8')">Execute AI Plan</button>
+                    <button type="button" class="btn btn-ghost btn-sm"
+                      onclick="sendAlert()">Alert Staff</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="zone-legend" aria-label="Zone occupancy legend">
+                <div class="zone-item"><div class="zone-color" style="background:#f5b400" aria-hidden="true"></div><span class="zone-name">North Stand</span><span class="zone-pct" style="color:#f5b400" aria-label="72 percent">72%</span></div>
+                <div class="zone-item"><div class="zone-color" style="background:#e8002d" aria-hidden="true"></div><span class="zone-name">South Stand</span><span class="zone-pct" style="color:#e8002d" aria-label="94 percent critical">94% ⚠️</span></div>
+                <div class="zone-item"><div class="zone-color" style="background:#00e676" aria-hidden="true"></div><span class="zone-name">East Stand</span><span class="zone-pct" style="color:#00e676" aria-label="38 percent">38%</span></div>
+                <div class="zone-item"><div class="zone-color" style="background:#00d4ff" aria-hidden="true"></div><span class="zone-name">West Stand</span><span class="zone-pct" style="color:#00d4ff" aria-label="61 percent">61%</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Live metrics -->
+          <div class="crowd-metric-grid" role="region" aria-label="Stadium occupancy metrics">
+            <div class="crowd-metric">
+              <div class="crowd-metric-val" style="color:var(--accent-cyan)" id="total-fans" aria-live="off">87,432</div>
+              <div class="crowd-metric-lbl">Total Fans Inside</div>
+            </div>
+            <div class="crowd-metric">
+              <div class="crowd-metric-val" style="color:var(--brand-gold)">12</div>
+              <div class="crowd-metric-lbl">Active AI Alerts</div>
+            </div>
+            <div class="crowd-metric">
+              <div class="crowd-metric-val" style="color:var(--accent-green)">3.2 min</div>
+              <div class="crowd-metric-lbl">Avg. Gate Wait</div>
+            </div>
+            <div class="crowd-metric">
+              <div class="crowd-metric-val" style="color:var(--brand-red)">2</div>
+              <div class="crowd-metric-lbl">Critical Zones</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <div class="divider" role="separator"></div>
+
+    <!-- ─────────────────────────────────────────────────────────────
+         NAVIGATION / GOOGLE MAPS
+    ───────────────────────────────────────────────────────────── -->
+    <section id="nav-section" aria-labelledby="nav-heading">
+      <div class="container">
+
+        <div class="section-head reveal">
+          <p class="section-label">📍 Google Maps</p>
+          <h2 class="section-title" id="nav-heading">
+            Smart Navigation<br /><span class="grad-text">&amp; Venue Finder</span>
+          </h2>
+          <p class="section-sub">
+            All 16 FIFA 2026 host venues across USA, Canada &amp; Mexico. AI-guided directions,
+            accessibility routes, shuttle drop-offs, and real-time traffic updates.
+          </p>
+        </div>
+
+        <div class="reveal">
+          <!-- Google Maps embed -->
+          <div class="map-container" role="region" aria-label="Google Maps showing FIFA 2026 host venues">
+            <iframe
+              id="google-map"
+              title="FIFA World Cup 2026 Venue Map — North America"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d15000000!2d-96!3d38!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sus!4v1720000000000!5m2!1sen!2sus"
+              aria-label="Interactive map showing FIFA World Cup 2026 host venues across North America"
+            ></iframe>
+            <div class="map-overlay" aria-hidden="true">
+              <input
+                type="search"
+                class="map-search"
+                id="map-search-input"
+                placeholder="🔍 Search venue, gate, or facility…"
+                aria-label="Search for a venue or facility on the map"
+                autocomplete="off"
+              />
+              <button type="button" class="btn btn-cyan btn-sm" onclick="searchVenue()" aria-label="Search venue">
+                Search
+              </button>
+            </div>
+          </div>
+
+          <!-- Navigation panels -->
+          <div class="nav-panels">
+
+            <!-- Venue list -->
+            <div>
+              <h3 style="font-family:var(--font-head);font-size:16px;font-weight:700;margin-bottom:16px">🏟️ Host Venues</h3>
+              <div style="display:flex;flex-direction:column;gap:10px" role="listbox" aria-label="FIFA 2026 host venues">
+                <div class="route-card selected" role="option" aria-selected="true"  onclick="selectVenue(this,'MetLife Stadium')"  tabindex="0"><div><div style="font-size:13px;font-weight:600">MetLife Stadium</div><div style="font-size:11px;color:var(--text-muted)">East Rutherford, NJ · 82,500 seats</div></div><span class="badge badge-gold">Final</span></div>
+                <div class="route-card"          role="option" aria-selected="false" onclick="selectVenue(this,'SoFi Stadium')"     tabindex="0"><div><div style="font-size:13px;font-weight:600">SoFi Stadium</div><div style="font-size:11px;color:var(--text-muted)">Inglewood, CA · 70,240 seats</div></div><span class="badge badge-cyan">Group</span></div>
+                <div class="route-card"          role="option" aria-selected="false" onclick="selectVenue(this,'AT&amp;T Stadium')" tabindex="0"><div><div style="font-size:13px;font-weight:600">AT&amp;T Stadium</div><div style="font-size:11px;color:var(--text-muted)">Arlington, TX · 80,000 seats</div></div><span class="badge badge-cyan">Semi-final</span></div>
+                <div class="route-card"          role="option" aria-selected="false" onclick="selectVenue(this,'Estadio Azteca')"   tabindex="0"><div><div style="font-size:13px;font-weight:600">Estadio Azteca</div><div style="font-size:11px;color:var(--text-muted)">Mexico City, MX · 87,523 seats</div></div><span class="badge badge-green">Opening</span></div>
+                <div class="route-card"          role="option" aria-selected="false" onclick="selectVenue(this,'BC Place')"         tabindex="0"><div><div style="font-size:13px;font-weight:600">BC Place</div><div style="font-size:11px;color:var(--text-muted)">Vancouver, CA · 54,500 seats</div></div><span class="badge badge-cyan">Group</span></div>
+              </div>
+            </div>
+
+            <!-- Route options -->
+            <div>
+              <h3 style="font-family:var(--font-head);font-size:16px;font-weight:700;margin-bottom:16px">🗺️ Navigation Options</h3>
+              <div style="display:flex;flex-direction:column;gap:10px">
+                <div class="card" style="padding:16px">
+                  <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+                    <span style="font-size:20px" aria-hidden="true">🚶</span>
+                    <div style="flex:1">
+                      <div style="font-size:13px;font-weight:600">Accessible Walking Route</div>
+                      <div style="font-size:12px;color:var(--text-muted)">Gates A-C · Elevator access · 8 min</div>
+                    </div>
+                    <span class="badge badge-green">Recommended</span>
+                  </div>
+                  <div class="progress-track" role="progressbar" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100" aria-label="Route congestion: 65%">
+                    <div class="progress-fill green" style="width:65%"></div>
+                  </div>
+                </div>
+                <div class="card" style="padding:16px">
+                  <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+                    <span style="font-size:20px" aria-hidden="true">🚇</span>
+                    <div style="flex:1">
+                      <div style="font-size:13px;font-weight:600">Subway / Metro</div>
+                      <div style="font-size:12px;color:var(--text-muted)">Line 7 — Stadium Station · 4 stops</div>
+                    </div>
+                    <span class="badge badge-cyan">12 min</span>
+                  </div>
+                  <div class="progress-track" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" aria-label="Route congestion: 40%">
+                    <div class="progress-fill" style="width:40%"></div>
+                  </div>
+                </div>
+                <div class="card" style="padding:16px">
+                  <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+                    <span style="font-size:20px" aria-hidden="true">🚗</span>
+                    <div style="flex:1">
+                      <div style="font-size:13px;font-weight:600">Drive &amp; Park — Lot D</div>
+                      <div style="font-size:12px;color:var(--text-muted)">492 spaces available · 18 min</div>
+                    </div>
+                    <span class="badge badge-gold">Moderate</span>
+                  </div>
+                  <div class="progress-track" role="progressbar" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100" aria-label="Lot utilisation: 55%">
+                    <div class="progress-fill gold" style="width:55%"></div>
+                  </div>
+                </div>
+                <button type="button" class="btn btn-primary w-full" onclick="openGoogleMaps()" id="open-maps-btn">
+                  📍 Open in Google Maps
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <div class="divider" role="separator"></div>
+
+    <!-- ─────────────────────────────────────────────────────────────
+         TRANSPORT
+    ───────────────────────────────────────────────────────────── -->
+    <section id="transport-section" aria-labelledby="transport-heading">
+      <div class="container">
+
+        <div class="section-head reveal">
+          <p class="section-label">🚌 Transit AI</p>
+          <h2 class="section-title" id="transport-heading">
+            Smart Transportation<br /><span class="grad-text">Planning</span>
+          </h2>
+          <p class="section-sub">
+            AI-optimised transit schedules with live tracking. Dynamic routing adapts to crowd
+            density — choose shuttle, metro, rideshare, or bicycle.
+          </p>
+        </div>
+
+        <div class="grid-4 reveal" role="list" aria-label="Transportation options">
+          <div class="transport-card" role="listitem" onclick="selectTransport('Shuttle Bus')" tabindex="0" aria-label="Shuttle Bus — next in 4 minutes, free for ticket holders">
+            <div class="transport-icon" aria-hidden="true">🚌</div>
+            <div class="transport-name">Shuttle Bus</div>
+            <div class="transport-time">Next: 4 min</div>
+            <div class="transport-freq">Every 8 min</div>
+            <div style="margin-top:12px"><span class="badge badge-green">Free · Priority</span></div>
+          </div>
+          <div class="transport-card" role="listitem" onclick="selectTransport('Metro')" tabindex="0" aria-label="Metro — next in 7 minutes, $2.50">
+            <div class="transport-icon" aria-hidden="true">🚇</div>
+            <div class="transport-name">Metro / Subway</div>
+            <div class="transport-time">Next: 7 min</div>
+            <div class="transport-freq">Line 7 · Every 5 min</div>
+            <div style="margin-top:12px"><span class="badge badge-cyan">$2.50</span></div>
+          </div>
+          <div class="transport-card" role="listitem" onclick="selectTransport('Rideshare')" tabindex="0" aria-label="Rideshare — ETA 6 minutes">
+            <div class="transport-icon" aria-hidden="true">🚗</div>
+            <div class="transport-name">Rideshare Zone</div>
+            <div class="transport-time">ETA: 6 min</div>
+            <div class="transport-freq">Uber · Lyft · Cabify</div>
+            <div style="margin-top:12px"><span class="badge badge-gold">Drop-off: Gate F</span></div>
+          </div>
+          <div class="transport-card" role="listitem" onclick="selectTransport('Bike Share')" tabindex="0" aria-label="Bike Share — 34 bikes nearby, zero emissions">
+            <div class="transport-icon" aria-hidden="true">🚲</div>
+            <div class="transport-name">Bike Share</div>
+            <div class="transport-time">34 bikes near you</div>
+            <div class="transport-freq">Electric &amp; standard</div>
+            <div style="margin-top:12px"><span class="badge badge-green">Eco · Zero emissions</span></div>
+          </div>
+        </div>
+
+        <div class="card reveal" style="margin-top:24px;padding:20px 24px">
+          <div style="display:flex;align-items:center;gap:14px">
+            <span style="font-size:24px" aria-hidden="true">🤖</span>
+            <div style="flex:1">
+              <div style="font-family:var(--font-head);font-size:15px;font-weight:700;margin-bottom:4px">
+                AI Transport Recommendation
+              </div>
+              <div style="font-size:13px;color:var(--text-muted)">
+                Based on South Stand congestion (94%), AI recommends
+                <strong style="color:var(--accent-cyan)">Shuttle Bus → West Gate</strong>.
+                Estimated arrival: 22:15. Alternative: Metro Line 7, Platform 3.
+              </div>
+            </div>
+            <button type="button" class="btn btn-cyan btn-sm"
+              onclick="sendQuickPrompt('How do I get to the nearest shuttle stop?')">
+              Ask AI
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <div class="divider" role="separator"></div>
+
+    <!-- ─────────────────────────────────────────────────────────────
+         SUSTAINABILITY
+    ───────────────────────────────────────────────────────────── -->
+    <section id="sustain-section" aria-labelledby="sustain-heading">
+      <div class="container">
+
+        <div class="section-head reveal">
+          <p class="section-label">♻️ Green AI</p>
+          <h2 class="section-title" id="sustain-heading">
+            Sustainability<br /><span class="grad-text">Dashboard</span>
+          </h2>
+          <p class="section-sub">
+            AI-driven energy optimisation, waste management, and carbon tracking across all 16
+            FIFA 2026 venues. Real-time environmental scoring powered by Google Cloud.
+          </p>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 2fr;gap:32px;align-items:center" class="reveal">
+
+          <!-- Eco Score Ring -->
+          <div class="card text-center" style="padding:40px 24px">
+            <h3 style="font-family:var(--font-head);font-size:15px;font-weight:700;margin-bottom:24px;color:var(--text-muted)">
+              ♻️ Eco Score — MetLife
+            </h3>
+            <div class="eco-score-ring" role="img" aria-label="Eco score: 94 out of 100 — Excellent">
+              <svg viewBox="0 0 180 180" width="180" height="180" aria-hidden="true">
+                <circle cx="90" cy="90" r="80" stroke="rgba(255,255,255,0.05)" stroke-width="12" fill="none"/>
+                <circle cx="90" cy="90" r="80"
+                  stroke="url(#eco-grad)" stroke-width="12" fill="none"
+                  stroke-dasharray="502" stroke-dashoffset="30"
+                  stroke-linecap="round"/>
+                <defs>
+                  <linearGradient id="eco-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%"   stop-color="#00e676"/>
+                    <stop offset="100%" stop-color="#00bcd4"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+              <div class="eco-ring-text">
+                <div class="eco-score-num">94</div>
+                <div class="eco-score-label">/ 100</div>
+              </div>
+            </div>
+            <div style="margin-top:20px"><span class="badge badge-green">🌿 Excellent</span></div>
+          </div>
+
+          <!-- Sustainability metrics -->
+          <div class="eco-metric-row" role="region" aria-label="Sustainability metrics">
+            <div class="eco-metric">
+              <div class="eco-metric-icon" aria-hidden="true">☀️</div>
+              <div class="eco-metric-info">
+                <div class="eco-metric-name">Renewable Energy Usage</div>
+                <div class="progress-track" role="progressbar" aria-valuenow="94" aria-valuemin="0" aria-valuemax="100" aria-label="Renewable energy: 94%">
+                  <div class="progress-fill green" style="width:94%"></div>
+                </div>
+              </div>
+              <span style="font-size:15px;font-weight:700;color:var(--accent-green);margin-left:12px;flex-shrink:0" aria-hidden="true">94%</span>
+            </div>
+            <div class="eco-metric">
+              <div class="eco-metric-icon" aria-hidden="true">💧</div>
+              <div class="eco-metric-info">
+                <div class="eco-metric-name">Water Recycling Rate</div>
+                <div class="progress-track" role="progressbar" aria-valuenow="87" aria-valuemin="0" aria-valuemax="100" aria-label="Water recycling: 87%">
+                  <div class="progress-fill green" style="width:87%"></div>
+                </div>
+              </div>
+              <span style="font-size:15px;font-weight:700;color:var(--accent-green);margin-left:12px;flex-shrink:0" aria-hidden="true">87%</span>
+            </div>
+            <div class="eco-metric">
+              <div class="eco-metric-icon" aria-hidden="true">♻️</div>
+              <div class="eco-metric-info">
+                <div class="eco-metric-name">Waste Diverted from Landfill</div>
+                <div class="progress-track" role="progressbar" aria-valuenow="78" aria-valuemin="0" aria-valuemax="100" aria-label="Waste diverted: 78%">
+                  <div class="progress-fill green" style="width:78%"></div>
+                </div>
+              </div>
+              <span style="font-size:15px;font-weight:700;color:var(--accent-green);margin-left:12px;flex-shrink:0" aria-hidden="true">78%</span>
+            </div>
+            <div class="eco-metric">
+              <div class="eco-metric-icon" aria-hidden="true">🌿</div>
+              <div class="eco-metric-info">
+                <div class="eco-metric-name">Carbon Offset Progress</div>
+                <div class="progress-track" role="progressbar" aria-valuenow="62" aria-valuemin="0" aria-valuemax="100" aria-label="Carbon offset: 62%">
+                  <div class="progress-fill gold" style="width:62%"></div>
+                </div>
+              </div>
+              <span style="font-size:15px;font-weight:700;color:var(--brand-gold);margin-left:12px;flex-shrink:0" aria-hidden="true">62%</span>
+            </div>
+            <div class="eco-metric">
+              <div class="eco-metric-icon" aria-hidden="true">🌡️</div>
+              <div class="eco-metric-info">
+                <div class="eco-metric-name">Smart HVAC Efficiency</div>
+                <div class="progress-track" role="progressbar" aria-valuenow="91" aria-valuemin="0" aria-valuemax="100" aria-label="HVAC efficiency: 91%">
+                  <div class="progress-fill" style="width:91%"></div>
+                </div>
+              </div>
+              <span style="font-size:15px;font-weight:700;color:var(--accent-cyan);margin-left:12px;flex-shrink:0" aria-hidden="true">91%</span>
+            </div>
+            <div style="margin-top:8px">
+              <button type="button" class="btn btn-ghost btn-sm"
+                onclick="sendQuickPrompt('What are the sustainability goals for FIFA 2026?')">
+                🌍 Ask AI about Eco Goals
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <div class="divider" role="separator"></div>
+
+    <!-- ─────────────────────────────────────────────────────────────
+         REAL-TIME ALERTS
+    ───────────────────────────────────────────────────────────── -->
+    <section id="alerts-section" aria-labelledby="alerts-heading">
+      <div class="container">
+
+        <div class="section-head reveal">
+          <p class="section-label">🔔 Live Feed</p>
+          <h2 class="section-title" id="alerts-heading">
+            Real-Time<br /><span class="grad-text">AI Alerts</span>
+          </h2>
+          <p class="section-sub">
+            Operational intelligence and safety alerts generated by Gemini AI, prioritised for
+            staff, organizers, and fans across all zones.
+          </p>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:12px"
+          id="alerts-list" class="reveal"
+          role="feed"
+          aria-label="Real-time operational alerts"
+          aria-live="polite"
+        >
+          <article class="alert-item" aria-labelledby="alert-1-title">
+            <div class="alert-icon crit" aria-hidden="true">🚨</div>
+            <div>
+              <div class="alert-title" id="alert-1-title">South Stand — Critical Overcrowding</div>
+              <div class="alert-desc">Density 94%. AI initiating overflow protocol: Gates B7-B8 opening. Redirecting foot traffic via West concourse. Security deployed.</div>
+              <div class="alert-time">⏱ 2 min ago</div>
+            </div>
+            <span class="badge badge-red" style="margin-left:auto;flex-shrink:0" aria-label="Severity: Critical">CRITICAL</span>
+          </article>
+
+          <article class="alert-item" aria-labelledby="alert-2-title">
+            <div class="alert-icon warn" aria-hidden="true">⚠️</div>
+            <div>
+              <div class="alert-title" id="alert-2-title">Parking Lot C — 85% Capacity</div>
+              <div class="alert-desc">AI rerouting vehicles to Lot A (23%) and Lot D (31%). Digital signage updated automatically.</div>
+              <div class="alert-time">⏱ 5 min ago</div>
+            </div>
+            <span class="badge badge-gold" style="margin-left:auto;flex-shrink:0" aria-label="Severity: High">HIGH</span>
+          </article>
+
+          <article class="alert-item" aria-labelledby="alert-3-title">
+            <div class="alert-icon info" aria-hidden="true">🌦️</div>
+            <div>
+              <div class="alert-title" id="alert-3-title">Weather Advisory — Light Rain at 22:30</div>
+              <div class="alert-desc">Precipitation probability 70%. Fan advisories sent in 12 languages. Covered walkways recommended.</div>
+              <div class="alert-time">⏱ 8 min ago</div>
+            </div>
+            <span class="badge badge-cyan" style="margin-left:auto;flex-shrink:0" aria-label="Severity: Informational">INFO</span>
+          </article>
+
+          <article class="alert-item" aria-labelledby="alert-4-title">
+            <div class="alert-icon ok" aria-hidden="true">✅</div>
+            <div>
+              <div class="alert-title" id="alert-4-title">Medical Stations — Fully Staffed</div>
+              <div class="alert-desc">All 8 stations operational. Avg. response: 1.8 min. AED locations broadcast to all devices.</div>
+              <div class="alert-time">⏱ 10 min ago</div>
+            </div>
+            <span class="badge badge-green" style="margin-left:auto;flex-shrink:0" aria-label="Status: OK">OK</span>
+          </article>
+
+          <article class="alert-item" aria-labelledby="alert-5-title">
+            <div class="alert-icon info" aria-hidden="true">🔌</div>
+            <div>
+              <div class="alert-title" id="alert-5-title">Smart Grid — Solar Surplus Detected</div>
+              <div class="alert-desc">Generating 12% above demand. Excess routed to EV charging. Eco score updated to 94/100.</div>
+              <div class="alert-time">⏱ 15 min ago</div>
+            </div>
+            <span class="badge badge-green" style="margin-left:auto;flex-shrink:0" aria-label="Type: Eco">ECO</span>
+          </article>
+        </div>
+
+        <div style="text-align:center;margin-top:24px">
+          <button type="button" class="btn btn-ghost" id="add-alert-btn">
+            🔄 Simulate New AI Alert
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <div class="divider" role="separator"></div>
+
+    <!-- ─────────────────────────────────────────────────────────────
+         ACCESSIBILITY
+    ───────────────────────────────────────────────────────────── -->
+    <section id="access-section" aria-labelledby="access-heading">
+      <div class="container">
+
+        <div class="section-head reveal">
+          <p class="section-label">♿ Inclusive Design</p>
+          <h2 class="section-title" id="access-heading">
+            Accessibility<br /><span class="grad-text">for Everyone</span>
+          </h2>
+          <p class="section-sub">
+            FIFA 2026 Smart Stadium ensures every fan has an equal, dignified experience.
+            AI-powered assistive features for mobility, vision, hearing, and cognitive needs.
+          </p>
+        </div>
+
+        <div class="grid-3 reveal" role="list" aria-label="Accessibility features">
+          <div class="access-feature" role="listitem">
+            <div class="access-icon blue" aria-hidden="true">♿</div>
+            <div>
+              <h3 class="access-title">Wheelchair Navigation</h3>
+              <p class="access-desc">AI-generated barrier-free routes with elevator priority, ramp locations, and accessible seating blocks. Real-time alerts if a path is blocked.</p>
+            </div>
+          </div>
+          <div class="access-feature" role="listitem">
+            <div class="access-icon cyan" aria-hidden="true">🔊</div>
+            <div>
+              <h3 class="access-title">Audio Description AI</h3>
+              <p class="access-desc">Gemini AI narrates match events, crowd atmosphere, and announcements for visually impaired fans via earpiece or phone audio.</p>
+            </div>
+          </div>
+          <div class="access-feature" role="listitem">
+            <div class="access-icon gold" aria-hidden="true">🤟</div>
+            <div>
+              <h3 class="access-title">Sign Language AI</h3>
+              <p class="access-desc">Real-time AI sign language interpretation overlay. Supports ASL, BSL, and 12 international sign languages on mobile screens.</p>
+            </div>
+          </div>
+          <div class="access-feature" role="listitem">
+            <div class="access-icon green" aria-hidden="true">📱</div>
+            <div>
+              <h3 class="access-title">Screen Reader Ready</h3>
+              <p class="access-desc">Full ARIA compliance across all digital touchpoints. Compatible with VoiceOver, TalkBack, NVDA, and JAWS.</p>
+            </div>
+          </div>
+          <div class="access-feature" role="listitem">
+            <div class="access-icon red" aria-hidden="true">🌐</div>
+            <div>
+              <h3 class="access-title">48-Language Support</h3>
+              <p class="access-desc">Gemini AI translates all signage, announcements, and responses in 48 languages including right-to-left scripts (Arabic, Hebrew).</p>
+            </div>
+          </div>
+          <div class="access-feature" role="listitem">
+            <div class="access-icon purple" aria-hidden="true">🧠</div>
+            <div>
+              <h3 class="access-title">Sensory-Friendly Zones</h3>
+              <p class="access-desc">Quiet rooms mapped by AI for neurodivergent fans. Dimmed lighting, reduced sound, and calm trained staff assigned to each zone.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card reveal" style="margin-top:32px;padding:24px;display:flex;align-items:center;gap:20px;flex-wrap:wrap">
+          <span style="font-size:32px" aria-hidden="true">♿</span>
+          <div style="flex:1;min-width:200px">
+            <div style="font-family:var(--font-head);font-size:16px;font-weight:700;margin-bottom:6px">Need Assistance?</div>
+            <div style="font-size:14px;color:var(--text-muted)">
+              Our AI assistant can find accessible routes, request a wheelchair escort, locate quiet zones,
+              or connect you with a trained volunteer.
+            </div>
+          </div>
+          <button type="button" class="btn btn-primary"
+            onclick="sendQuickPrompt('I need accessibility assistance — wheelchair accessible route to my seat')"
+            style="flex-shrink:0">
+            ♿ Request Help
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <div class="divider" role="separator"></div>
+
+    <!-- ─────────────────────────────────────────────────────────────
+         VOLUNTEER / STAFF OPERATIONS
+    ───────────────────────────────────────────────────────────── -->
+    <section id="vol-section" aria-labelledby="vol-heading">
+      <div class="container">
+
+        <div class="section-head reveal">
+          <p class="section-label">👥 Staff Intelligence</p>
+          <h2 class="section-title" id="vol-heading">
+            Volunteer &amp; Staff<br /><span class="grad-text">Operations</span>
+          </h2>
+          <p class="section-sub">
+            AI-managed staffing for 10,000+ volunteers across 16 venues. Real-time task assignment,
+            zone coverage tracking, and performance analytics.
+          </p>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px" class="reveal">
+
+          <!-- Active staff list -->
+          <div>
+            <h3 style="font-family:var(--font-head);font-size:15px;font-weight:700;margin-bottom:16px">
+              Active Staff — MetLife Stadium
+            </h3>
+            <div style="display:flex;flex-direction:column;gap:10px" role="list" aria-label="Active staff members">
+              <div class="staff-card" role="listitem">
+                <div class="staff-avatar" aria-hidden="true">👤</div>
+                <div><div class="staff-name">Maria Santos</div><div class="staff-role">Gate A Supervisor · Zone 1</div></div>
+                <div class="staff-status"><span class="badge badge-green">On Duty</span></div>
+              </div>
+              <div class="staff-card" role="listitem">
+                <div class="staff-avatar" aria-hidden="true">👤</div>
+                <div><div class="staff-name">James Chen</div><div class="staff-role">Medical Response · Sector 5</div></div>
+                <div class="staff-status"><span class="badge badge-green">On Duty</span></div>
+              </div>
+              <div class="staff-card" role="listitem">
+                <div class="staff-avatar" aria-hidden="true">👤</div>
+                <div><div class="staff-name">Amira Al-Rashid</div><div class="staff-role">Multilingual Volunteer · Arabic</div></div>
+                <div class="staff-status"><span class="badge badge-cyan">Available</span></div>
+              </div>
+              <div class="staff-card" role="listitem">
+                <div class="staff-avatar" aria-hidden="true">👤</div>
+                <div><div class="staff-name">Lucas Ferreira</div><div class="staff-role">Crowd Control · South Stand</div></div>
+                <div class="staff-status"><span class="badge badge-red">Alert Mode</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- AI task assignment -->
+          <div>
+            <h3 style="font-family:var(--font-head);font-size:15px;font-weight:700;margin-bottom:16px">
+              AI Task Assignment
+            </h3>
+            <div style="display:flex;flex-direction:column;gap:12px">
+              <div class="card" style="padding:16px">
+                <div style="font-size:13px;font-weight:600;margin-bottom:8px;color:var(--brand-red)">🚨 URGENT — South Stand</div>
+                <div style="font-size:12px;color:var(--text-muted);margin-bottom:10px">AI assigned 6 crowd control officers. Requesting 2 more from available pool.</div>
+                <div style="display:flex;gap:8px">
+                  <button type="button" class="btn btn-primary btn-sm" id="approve-crowd-control-btn">✓ Approve</button>
+                  <button type="button" class="btn btn-ghost btn-sm" id="reject-task-btn">✗ Reject</button>
+                </div>
+              </div>
+              <div class="card" style="padding:16px">
+                <div style="font-size:13px;font-weight:600;margin-bottom:8px;color:var(--brand-gold)">📦 MEDIUM — Concourse B</div>
+                <div style="font-size:12px;color:var(--text-muted);margin-bottom:10px">Food stall #14 running low. AI requests restocking from storage unit 3.</div>
+                <button type="button" class="btn btn-ghost btn-sm" id="approve-restock-btn">✓ Approve</button>
+              </div>
+              <div class="card" style="padding:16px">
+                <div style="font-size:13px;font-weight:600;margin-bottom:8px;color:var(--accent-green)">ℹ️ INFO — Gate F</div>
+                <div style="font-size:12px;color:var(--text-muted)">Amira Al-Rashid reassigned to Gate F — Arabic-speaking fan group (~200 fans) arriving in 12 min.</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       FOOTER
+  ══════════════════════════════════════════════════════════════ -->
+  <footer role="contentinfo">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand">⚽ FIFA 2026 <span style="color:var(--accent-cyan)">AI Hub</span></div>
+          <p class="footer-desc">
+            GenAI-powered smart stadium operations for FIFA World Cup 2026. Built with Google's AI
+            ecosystem to enhance every touchpoint of the tournament experience.
+          </p>
+          <div class="footer-services" aria-label="Google services used">
+            <span class="service-chip">🤖 Google Gemini AI</span>
+            <span class="service-chip">🗺️ Google Maps</span>
+            <span class="service-chip">📊 Google Analytics</span>
+            <span class="service-chip">🏷️ Google Tag Manager</span>
+            <span class="service-chip">🔤 Google Fonts</span>
+            <span class="service-chip">☁️ Google Cloud</span>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-title">Features</div>
+          <a href="#ai-section"        class="footer-link">AI Assistant</a>
+          <a href="#crowd-section"     class="footer-link">Crowd Management</a>
+          <a href="#nav-section"       class="footer-link">Navigation</a>
+          <a href="#transport-section" class="footer-link">Transportation</a>
+          <a href="#sustain-section"   class="footer-link">Sustainability</a>
+          <a href="#access-section"    class="footer-link">Accessibility</a>
+        </div>
+        <div>
+          <div class="footer-col-title">Google Services</div>
+          <a href="https://ai.google.dev"          class="footer-link" target="_blank" rel="noopener noreferrer">Gemini API</a>
+          <a href="https://maps.google.com"        class="footer-link" target="_blank" rel="noopener noreferrer">Google Maps</a>
+          <a href="https://analytics.google.com"   class="footer-link" target="_blank" rel="noopener noreferrer">Analytics</a>
+          <a href="https://tagmanager.google.com"  class="footer-link" target="_blank" rel="noopener noreferrer">Tag Manager</a>
+          <a href="https://fonts.google.com"       class="footer-link" target="_blank" rel="noopener noreferrer">Google Fonts</a>
+          <a href="https://cloud.google.com"       class="footer-link" target="_blank" rel="noopener noreferrer">Cloud Platform</a>
+        </div>
+        <div>
+          <div class="footer-col-title">Project</div>
+          <a href="#hero"            class="footer-link">Overview</a>
+          <a href="#alerts-section"  class="footer-link">Alert Feed</a>
+          <a href="#access-section"  class="footer-link">Accessibility</a>
+          <a href="#vol-section"     class="footer-link">Staff Portal</a>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p class="footer-copy">
+          © 2026 Smart Stadium AI Hub · FIFA World Cup 2026 · Powered by Google Gemini &amp; Cloud
+        </p>
+        <div style="display:flex;gap:8px;align-items:center">
+          <span class="badge badge-green"><span class="pulse" aria-hidden="true"></span> All Systems Live</span>
+          <span class="badge badge-cyan">v2.0.0</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       SCRIPTS — loaded at bottom for performance
+       Load order matters: config → ui → gemini → crowd → alerts → navigation → app
+  ══════════════════════════════════════════════════════════════ -->
+  <script src="js/config.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/gemini.js"></script>
+  <script src="js/crowd.js"></script>
+  <script src="js/alerts.js"></script>
+  <script src="js/navigation.js"></script>
+  <script src="js/app.js"></script>
+
+  <!-- Test suite — available in browser console via runTests() -->
+  <script src="tests/stadium.test.js"></script>
+
+</body>
+</html>
