@@ -6,6 +6,8 @@ RUN rm -rf /usr/share/nginx/html/*
 
 # Copy project files into nginx web root
 COPY index.html        /usr/share/nginx/html/
+COPY sw.js             /usr/share/nginx/html/
+COPY manifest.json     /usr/share/nginx/html/
 COPY css/              /usr/share/nginx/html/css/
 COPY js/               /usr/share/nginx/html/js/
 COPY tests/            /usr/share/nginx/html/tests/
