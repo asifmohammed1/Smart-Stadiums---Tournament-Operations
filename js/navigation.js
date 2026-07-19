@@ -3,10 +3,31 @@
  *               venue selection, route display, and transport mode logic.
  * @module navigation
  * @author Asif | AntiGravity
- * @version 2.0.0
+ * @version 2.2.0
  */
 
 'use strict';
+
+/* ====================================================================
+   KEYBOARD ACCESSIBILITY UTILITY
+==================================================================== */
+
+/**
+ * Add Enter / Space keyboard activation to an element, simulating a
+ * click event. This DRY utility replaces repeated inline keydown
+ * handlers across navigation, transport, and venue cards.
+ *
+ * @param {HTMLElement} element - Element to make keyboard-activatable
+ * @returns {void}
+ */
+function addKeyboardActivation(element) {
+  element.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      element.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    }
+  });
+}
 
 /* ====================================================================
    VENUE SELECTION
@@ -18,6 +39,8 @@
  *
  * @param {HTMLElement} el   - The clicked card element
  * @param {string}      name - Venue display name
+ * @returns {void}
+ * @fires gtag#venue_select
  */
 function selectVenue(el, name) {
   document.querySelectorAll('.route-card').forEach((card) => {
@@ -45,12 +68,14 @@ function selectVenue(el, name) {
 /**
  * Read the map search input value and display a toast.
  * In production this would call the Google Maps Places API.
+ * @returns {void}
+ * @fires gtag#venue_search
  */
 function searchVenue() {
   const input = document.getElementById('map-search-input');
-  if (!input) return;
+  if (!input) {return;}
 
-  const query = input.value.trim();
+  const query = sanitiseInput(input.value);
   if (!query) {
     showToast('Please enter a venue or facility name', 'warn');
     return;
@@ -98,6 +123,8 @@ function openGoogleMaps() {
  * with a pre-filled transport query.
  *
  * @param {string} mode - Transport mode label (e.g. 'Shuttle Bus', 'Metro')
+ * @returns {void}
+ * @fires gtag#transport_select
  */
 function selectTransport(mode) {
   showToast(`🚌 Loading ${mode} info…`, 'info');
@@ -149,28 +176,17 @@ function initNavigation() {
     openMapsBtn.addEventListener('click', openGoogleMaps);
   }
 
-  // Venue route-cards — keyboard support
+  // Venue route-cards — keyboard support (DRY utility)
   document.querySelectorAll('.route-card').forEach((card) => {
     card.setAttribute('tabindex', '0');
     card.setAttribute('role', 'option');
     card.setAttribute('aria-selected', card.classList.contains('selected') ? 'true' : 'false');
-
-    card.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        card.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-      }
-    });
+    addKeyboardActivation(card);
   });
 
-  // Transport cards — keyboard support
+  // Transport cards — keyboard support (DRY utility)
   document.querySelectorAll('.transport-card').forEach((card) => {
     card.setAttribute('tabindex', '0');
-    card.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        card.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-      }
-    });
+    addKeyboardActivation(card);
   });
 }

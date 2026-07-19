@@ -4,7 +4,7 @@
  *               response rendering, and safe demo-mode fallback.
  * @module gemini
  * @author Asif | AntiGravity
- * @version 2.0.0
+ * @version 2.2.0
  */
 
 'use strict';
@@ -13,11 +13,42 @@
    MODULE STATE
 ==================================================================== */
 
-/** @type {number|null} Timestamp of the last API call (for rate limiting) */
+/** @type {number} Timestamp of the last API call (for rate limiting) */
 let _lastRequestTime = 0;
 
 /** @type {boolean} Whether a request is currently in flight */
 let _requestPending  = false;
+
+/** @type {AbortController|null} Active fetch abort controller */
+let _activeController = null;
+
+/**
+ * LRU response cache for demo mode — avoids repeated DEMO_RESPONSES
+ * iteration for identical queries within the same session.
+ * @type {Map<string, string>}
+ */
+const _responseCache = new Map();
+
+/** @constant {number} Maximum entries in response cache */
+const RESPONSE_CACHE_MAX = 50;
+
+/** @constant {number} Fetch timeout in milliseconds */
+const FETCH_TIMEOUT_MS = 15000;
+
+/**
+ * Structured error codes for diagnostic logging.
+ * @readonly
+ * @enum {string}
+ */
+const AI_ERROR = Object.freeze({
+  API_KEY_MISSING:  'E_API_KEY_MISSING',
+  NETWORK_FAILURE:  'E_NETWORK_FAILURE',
+  HTTP_ERROR:       'E_HTTP_ERROR',
+  EMPTY_RESPONSE:   'E_EMPTY_RESPONSE',
+  PARSE_ERROR:      'E_PARSE_ERROR',
+  TIMEOUT:          'E_TIMEOUT',
+  RATE_LIMITED:     'E_RATE_LIMITED',
+});
 
 /* ====================================================================
    INPUT SANITISATION
@@ -62,7 +93,7 @@ function sanitiseInput(raw) {
  * @returns {string}      Safe HTML string
  */
 function formatMessage(text) {
-  if (!text) return '';
+  if (!text) {return '';}
 
   // Sanitise first — strip any HTML the model may have emitted
   let safe = text
@@ -86,16 +117,31 @@ function formatMessage(text) {
 
 /**
  * Find the best matching demo response for a given user message.
- * Checks if the message contains any of the DEMO_RESPONSES keys.
+ * Results are cached in an LRU map for repeat queries within the same session.
  *
- * @param  {string}      message - Sanitised user message (lowercase)
+ * @param  {string}      message - Sanitised user message (any case)
  * @returns {string|null}         Matching demo response or null
  */
 function findDemoResponse(message) {
   const lower = message.toLowerCase();
-  for (const [keyword, response] of Object.entries(DEMO_RESPONSES)) {
-    if (lower.includes(keyword)) return response;
+
+  // Check cache first
+  if (_responseCache.has(lower)) {
+    return _responseCache.get(lower);
   }
+
+  for (const [keyword, response] of Object.entries(DEMO_RESPONSES)) {
+    if (lower.includes(keyword)) {
+      // Evict oldest entry if cache is full
+      if (_responseCache.size >= RESPONSE_CACHE_MAX) {
+        const firstKey = _responseCache.keys().next().value;
+        _responseCache.delete(firstKey);
+      }
+      _responseCache.set(lower, response);
+      return response;
+    }
+  }
+
   return null;
 }
 
@@ -105,25 +151,84 @@ function findDemoResponse(message) {
 
 /**
  * Send a message to the Google Gemini API and return the text response.
- * Includes rate limiting (GEMINI_CONFIG.RATE_LIMIT_MS between calls).
+ * Includes rate limiting (GEMINI_CONFIG.RATE_LIMIT_MS between calls),
+ * AbortController timeout protection, and granular error handling.
  *
  * @param  {string}          userMessage - Sanitised user input
  * @param  {string}          lang        - BCP-47 language code for response
  * @returns {Promise<string>}             AI response text
- * @throws {Error}                        On network failure or non-2xx response
+ * @throws {Error}                        With error code from AI_ERROR enum
  */
-async function callGeminiAPI(userMessage, lang) {
-  // Rate limit guard
+/**
+ * Enforce the rate-limiting delay between Gemini API requests.
+ * @returns {Promise<void>} Resolves when the rate limit elapsed
+ */
+async function enforceRateLimit() {
   const now     = Date.now();
   const elapsed = now - _lastRequestTime;
   if (elapsed < GEMINI_CONFIG.RATE_LIMIT_MS) {
     await new Promise((r) => setTimeout(r, GEMINI_CONFIG.RATE_LIMIT_MS - elapsed));
   }
   _lastRequestTime = Date.now();
+}
+
+/**
+ * Execute the API fetch request with AbortController timeout protection.
+ * @param {string} url - API request endpoint
+ * @param {string} prompt - Prompt payload string
+ * @returns {Promise<Response>} Network response object
+ * @throws {Error} Timeout or network failure errors
+ */
+async function fetchWithTimeout(url, prompt) {
+  _activeController = new AbortController();
+  const timeoutId = setTimeout(() => {
+    if (_activeController) {
+      _activeController.abort();
+    }
+  }, FETCH_TIMEOUT_MS);
+
+  try {
+    return await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      signal: _activeController.signal,
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: {
+          temperature:     GEMINI_CONFIG.TEMPERATURE,
+          maxOutputTokens: GEMINI_CONFIG.MAX_OUTPUT_TOKENS,
+          topP:            GEMINI_CONFIG.TOP_P,
+        },
+        safetySettings: SAFETY_SETTINGS,
+      }),
+    });
+  } catch (fetchErr) {
+    if (fetchErr.name === 'AbortError') {
+      throw new Error(`${AI_ERROR.TIMEOUT}: Request timed out after ${FETCH_TIMEOUT_MS}ms`);
+    }
+    throw new Error(`${AI_ERROR.NETWORK_FAILURE}: ${fetchErr.message}`);
+  } finally {
+    clearTimeout(timeoutId);
+    _activeController = null;
+  }
+}
+
+/**
+ * Send a message to the Google Gemini API and return the text response.
+ * Includes rate limiting (GEMINI_CONFIG.RATE_LIMIT_MS between calls),
+ * AbortController timeout protection, and granular error handling.
+ *
+ * @param  {string}          userMessage - Sanitised user input
+ * @param  {string}          lang        - BCP-47 language code for response
+ * @returns {Promise<string>}             AI response text
+ * @throws {Error}                        With error code from AI_ERROR enum
+ */
+async function callGeminiAPI(userMessage, lang) {
+  await enforceRateLimit();
 
   // Validate API key format (basic check — not empty, not the placeholder)
   if (!GEMINI_CONFIG.API_KEY || GEMINI_CONFIG.API_KEY === 'YOUR_GEMINI_API_KEY') {
-    throw new Error('API key not configured');
+    throw new Error(`${AI_ERROR.API_KEY_MISSING}: API key not configured`);
   }
 
   const langInstruction = lang !== 'en'
@@ -131,32 +236,25 @@ async function callGeminiAPI(userMessage, lang) {
     : '';
 
   const prompt = `${STADIUM_SYSTEM_PROMPT}${langInstruction}\n\nUser: ${userMessage}`;
-
   const url = `${GEMINI_CONFIG.ENDPOINT}/${GEMINI_CONFIG.MODEL}:generateContent?key=${GEMINI_CONFIG.API_KEY}`;
 
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contents: [{ parts: [{ text: prompt }] }],
-      generationConfig: {
-        temperature:     GEMINI_CONFIG.TEMPERATURE,
-        maxOutputTokens: GEMINI_CONFIG.MAX_OUTPUT_TOKENS,
-        topP:            GEMINI_CONFIG.TOP_P,
-      },
-      safetySettings: SAFETY_SETTINGS,
-    }),
-  });
+  const response = await fetchWithTimeout(url, prompt);
 
   if (!response.ok) {
-    throw new Error(`Gemini API error: HTTP ${response.status}`);
+    throw new Error(`${AI_ERROR.HTTP_ERROR}: HTTP ${response.status}`);
   }
 
-  const data = await response.json();
-  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+  // Granular JSON parsing — separate catch for malformed response body
+  let data;
+  try {
+    data = await response.json();
+  } catch (parseErr) {
+    throw new Error(`${AI_ERROR.PARSE_ERROR}: Failed to parse API response — ${parseErr.message}`);
+  }
 
+  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
   if (!text) {
-    throw new Error('Empty response from Gemini API');
+    throw new Error(`${AI_ERROR.EMPTY_RESPONSE}: No text in Gemini API response`);
   }
 
   return text;
@@ -168,14 +266,18 @@ async function callGeminiAPI(userMessage, lang) {
 
 /**
  * Append a message bubble to the chat messages container.
+ * Uses DocumentFragment for batch DOM insertion (single reflow).
  *
  * @param {'bot'|'user'} role     - Sender role
  * @param {string}       content  - Raw markdown text (for bot) or sanitised text (for user)
  * @param {boolean}      [isDemo=false] - Whether response came from demo mode
+ * @fires gtag#ai_message_rendered
  */
 function appendMessage(role, content, isDemo = false) {
   const container = document.getElementById('chat-messages');
-  if (!container) return;
+  if (!container) {return;}
+
+  const fragment = document.createDocumentFragment();
 
   const wrapper = document.createElement('div');
   wrapper.className = `msg msg-${role}`;
@@ -217,7 +319,8 @@ function appendMessage(role, content, isDemo = false) {
     wrapper.appendChild(attr);
   }
 
-  container.appendChild(wrapper);
+  fragment.appendChild(wrapper);
+  container.appendChild(fragment);
   container.scrollTop = container.scrollHeight;
 
   // Announce to screen readers
@@ -230,7 +333,7 @@ function appendMessage(role, content, isDemo = false) {
  */
 function showTypingIndicator() {
   const container = document.getElementById('chat-messages');
-  if (!container) return null;
+  if (!container) {return null;}
 
   const wrapper = document.createElement('div');
   wrapper.className = 'msg msg-bot';
@@ -306,16 +409,16 @@ async function getAIReply(safe, lang) {
  * @returns {Promise<void>}
  */
 async function sendMessage() {
-  if (_requestPending) return; // Prevent double-submit
+  if (_requestPending) {return;} // Prevent double-submit
 
   const inputEl = document.getElementById('chat-input');
   const sendBtn = document.getElementById('send-btn');
   const langSel = document.getElementById('chat-lang');
 
-  if (!inputEl || !sendBtn) return;
+  if (!inputEl || !sendBtn) {return;}
 
   const rawMessage = inputEl.value;
-  if (!rawMessage.trim()) return;
+  if (!rawMessage.trim()) {return;}
 
   const safe = sanitiseInput(rawMessage);
   const lang = langSel ? langSel.value : 'en';
@@ -334,11 +437,11 @@ async function sendMessage() {
 
   try {
     const { reply, isDemo } = await getAIReply(safe, lang);
-    if (typingEl) typingEl.remove();
+    if (typingEl) {typingEl.remove();}
     appendMessage('bot', reply, isDemo);
   } catch (err) {
-    console.error('[StadiumAI] Gemini error:', err.message);
-    if (typingEl) typingEl.remove();
+    console.error(`[StadiumAI] Gemini error (${err.message.split(':')[0] || 'UNKNOWN'}):`, err.message);
+    if (typingEl) {typingEl.remove();}
     appendMessage(
       'bot',
       '⚠️ I\'m having trouble connecting right now. Please try again in a moment, '
@@ -368,8 +471,8 @@ function sendQuickPrompt(text) {
   const aiSection = document.getElementById('ai-section');
   const inputEl   = document.getElementById('chat-input');
 
-  if (aiSection) aiSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  if (inputEl) inputEl.value = text;
+  if (aiSection) {aiSection.scrollIntoView({ behavior: 'smooth', block: 'start' });}
+  if (inputEl) {inputEl.value = text;}
 
   // Small delay so the scroll completes before sending
   setTimeout(sendMessage, 350);
@@ -386,8 +489,8 @@ function openAIAssistant() {
   const aiSection = document.getElementById('ai-section');
   const inputEl   = document.getElementById('chat-input');
 
-  if (aiSection) aiSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  if (inputEl)   setTimeout(() => inputEl.focus(), 500);
+  if (aiSection) {aiSection.scrollIntoView({ behavior: 'smooth', block: 'start' });}
+  if (inputEl)   {setTimeout(() => inputEl.focus(), 500);}
 }
 
 /* ====================================================================
@@ -419,15 +522,15 @@ function initGemini() {
   const inputEl  = document.getElementById('chat-input');
   const sendBtn  = document.getElementById('send-btn');
 
-  if (inputEl) inputEl.addEventListener('keydown', handleChatKey);
-  if (sendBtn) sendBtn.addEventListener('click', sendMessage);
+  if (inputEl) {inputEl.addEventListener('keydown', handleChatKey);}
+  if (sendBtn) {sendBtn.addEventListener('click', sendMessage);}
 
   // Quick-prompt chip click handler (delegated to container)
   const quickPromptsContainer = document.querySelector('.chat-quick-prompts');
   if (quickPromptsContainer) {
     quickPromptsContainer.addEventListener('click', (e) => {
       const chip = e.target.closest('.quick-chip');
-      if (chip) sendQuickPrompt(chip.textContent.trim());
+      if (chip) {sendQuickPrompt(chip.textContent.trim());}
     });
   }
 }

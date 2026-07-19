@@ -1,0 +1,46 @@
+{
+  "name": "smart-stadium-ai-hub",
+  "version": "2.2.0",
+  "description": "FIFA World Cup 2026 — GenAI-powered Smart Stadium & Tournament Operations Hub",
+  "author": "Asif | AntiGravity",
+  "license": "MIT",
+  "homepage": "https://smart-stadiums-tournament-operation-psi.vercel.app/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/asifmohammed1/Smart-Stadiums---Tournament-Operations.git"
+  },
+  "keywords": [
+    "fifa-2026",
+    "smart-stadium",
+    "google-gemini",
+    "generative-ai",
+    "crowd-management",
+    "multilingual",
+    "accessibility",
+    "pwa",
+    "cloud-run"
+  ],
+  "scripts": {
+    "start": "npx serve . -p 3000",
+    "lint": "npx eslint js/**/*.js sw.js --max-warnings 0",
+    "lint:fix": "npx eslint js/**/*.js sw.js --fix",
+    "test": "npx serve . -p 3000 & echo 'Open http://localhost:3000 and run runTests() in console'",
+    "validate": "npx html-validate index.html",
+    "docker:build": "docker build -t smart-stadium-ai:latest .",
+    "docker:run": "docker run -p 8080:8080 smart-stadium-ai:latest"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "serve": "^14.2.3",
+    "html-validate": "^9.4.0"
+  },
+  "browserslist": [
+    "chrome >= 120",
+    "firefox >= 121",
+    "safari >= 17",
+    "edge >= 120"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

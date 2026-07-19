@@ -3,7 +3,7 @@
  *               the operational alert feed for stadium staff and organizers.
  * @module alerts
  * @author Asif | AntiGravity
- * @version 2.0.0
+ * @version 2.2.0
  */
 
 'use strict';
@@ -79,10 +79,12 @@ function buildAlertElement(template, timeAgo = 'Just now') {
  * Prepend a new simulated AI alert to the top of the alerts list.
  * Cycles through ALERT_TEMPLATES so each click shows a different alert.
  * Announces the new alert to screen readers via aria-live region.
+ * @returns {void}
+ * @fires gtag#alert_simulated
  */
 function addDemoAlert() {
   const list = document.getElementById('alerts-list');
-  if (!list) return;
+  if (!list) {return;}
 
   const template = ALERT_TEMPLATES[_alertIndex % ALERT_TEMPLATES.length];
   _alertIndex++;
@@ -123,8 +125,16 @@ function addDemoAlert() {
  * Disables the approve button and shows a success toast.
  *
  * @param {string} taskId - Task identifier used to locate the button by ID
+ * @returns {void}
+ * @fires gtag#task_approved
  */
 function approveTask(taskId) {
+  // Defensive: validate taskId is a non-empty string
+  if (!taskId || typeof taskId !== 'string') {
+    console.warn('[Alerts] approveTask called with invalid taskId:', taskId);
+    return;
+  }
+
   const btn = document.getElementById(`approve-${taskId}-btn`);
   if (btn) {
     btn.textContent = '✓ Approved';
@@ -143,6 +153,7 @@ function approveTask(taskId) {
 /**
  * Reject an AI-generated staff task.
  * In production this would re-queue the task for human review.
+ * @returns {void}
  */
 function rejectTask() {
   showToast('✗ Task rejected — AI will reassign resources', 'warn');
@@ -158,7 +169,7 @@ function rejectTask() {
  */
 function initAlerts() {
   const addBtn = document.getElementById('add-alert-btn');
-  if (addBtn) addBtn.addEventListener('click', addDemoAlert);
+  if (addBtn) {addBtn.addEventListener('click', addDemoAlert);}
 
   // Staff task approve/reject buttons (delegated)
   document.querySelectorAll('[id^="approve-"]').forEach((btn) => {

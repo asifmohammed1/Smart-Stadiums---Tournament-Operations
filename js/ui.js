@@ -3,7 +3,7 @@
  *               and navigation active-state tracking.
  * @module ui
  * @author Asif | AntiGravity
- * @version 2.0.0
+ * @version 2.2.0
  *
  * All DOM element references are cached once at module init-time to
  * avoid repeated querySelector/getElementById calls in hot paths.
@@ -27,8 +27,22 @@ let _navObserver    = null;
 /** @type {number|null} Live-clock interval ID */
 let _clockInterval  = null;
 
+/** @type {number|null} Live fan-count interval ID */
+let _fanCountInterval = null;
+
 /** @type {number} Current language index (shared with chat.js via getter) */
 let _langIndex = 0;
+
+/* ── Cached DOM element references (populated in initUI) ─────────── */
+
+/** @type {HTMLElement|null} */
+let _totalFansEl = null;
+
+/** @type {HTMLElement|null} */
+let _langDisplayEl = null;
+
+/** @type {HTMLSelectElement|null} */
+let _chatLangEl = null;
 
 /* ====================================================================
    TOAST NOTIFICATIONS
@@ -55,7 +69,7 @@ const TOAST_STYLES = Object.freeze({
 function showToast(message, type = 'info') {
   if (!_toastArea) {
     _toastArea = document.getElementById('toast-area');
-    if (!_toastArea) return;
+    if (!_toastArea) {return;}
   }
 
   const style = TOAST_STYLES[type] || TOAST_STYLES.info;
@@ -98,9 +112,10 @@ function showToast(message, type = 'info') {
 /**
  * Fade out and remove a toast element.
  * @param {HTMLElement} toast
+ * @returns {void}
  */
 function removeToast(toast) {
-  if (!toast.parentNode) return;
+  if (!toast.parentNode) {return;}
   toast.style.transition = 'opacity 0.35s ease, transform 0.35s ease';
   toast.style.opacity    = '0';
   toast.style.transform  = 'translateX(20px)';
@@ -120,7 +135,7 @@ function removeToast(toast) {
  * @param {string}      [suffix=''] - Optional suffix (e.g. '%', ' km')
  */
 function animateCounter(el, target, suffix = '') {
-  if (!el) return;
+  if (!el) {return;}
 
   const start    = parseInt(el.textContent.replace(/[^0-9]/g, ''), 10) || 0;
   const duration = 1500; // ms
@@ -130,7 +145,7 @@ function animateCounter(el, target, suffix = '') {
    * @param {number} timestamp - rAF timestamp
    */
   function step(timestamp) {
-    if (!startTime) startTime = timestamp;
+    if (!startTime) {startTime = timestamp;}
     const elapsed  = timestamp - startTime;
     const progress = Math.min(elapsed / duration, 1);
 
@@ -155,16 +170,32 @@ function animateCounter(el, target, suffix = '') {
 /**
  * Start the live fan-count ticker.
  * Adjusts the displayed figure by ±20 every 5 s to simulate streaming data.
+ * Only updates when the element is visible (saves CPU when scrolled away).
+ * @returns {void}
  */
 function startLiveFanCount() {
-  const el = document.getElementById('total-fans');
-  if (!el) return;
+  _totalFansEl = _totalFansEl || document.getElementById('total-fans');
+  if (!_totalFansEl) {return;}
 
-  setInterval(() => {
-    const current = parseInt(el.textContent.replace(/[^0-9]/g, ''), 10) || 87432;
+  let isVisible = true;
+
+  // Use IntersectionObserver to pause updates when element is off-screen
+  const visibilityObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        isVisible = entry.isIntersecting;
+      });
+    },
+    { threshold: 0 }
+  );
+  visibilityObserver.observe(_totalFansEl);
+
+  _fanCountInterval = setInterval(() => {
+    if (!isVisible) {return;} // Skip update when off-screen
+    const current = parseInt(_totalFansEl.textContent.replace(/[^0-9]/g, ''), 10) || 87432;
     const delta   = Math.floor(Math.random() * 41) - 20; // -20 to +20
-    el.textContent = (current + delta).toLocaleString();
-  }, 5000);
+    _totalFansEl.textContent = (current + delta).toLocaleString();
+  }, 5 * TIME_MS.SECOND);
 }
 
 /* ====================================================================
@@ -173,6 +204,7 @@ function startLiveFanCount() {
 
 /**
  * Update the browser tab title with a live clock every second.
+ * @returns {void}
  */
 function startLiveClock() {
   _clockInterval = setInterval(() => {
@@ -183,12 +215,14 @@ function startLiveClock() {
       second: '2-digit',
     });
     document.title = `FIFA 2026 AI Hub · ${time}`;
-  }, 1000);
+  }, TIME_MS.SECOND);
 }
 
 /**
  * Stop the live clock ticker and restore the default page title.
  * Call this before navigating away or in SPA teardown.
+ * Idempotent — safe to call multiple times.
+ * @returns {void}
  */
 function stopLiveClock() {
   if (_clockInterval !== null) {
@@ -242,17 +276,17 @@ const NAV_SECTION_IDS = Object.freeze([
  */
 function initNavActiveState() {
   const navLinks = document.querySelectorAll('.nav-link');
-  if (!navLinks.length) return;
+  if (!navLinks.length) {return;}
 
   _navObserver = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
+        if (!entry.isIntersecting) {return;}
         const idx = NAV_SECTION_IDS.indexOf(entry.target.id);
-        if (idx === -1) return;
+        if (idx === -1) {return;}
 
         navLinks.forEach((link) => link.classList.remove('active'));
-        if (navLinks[idx]) navLinks[idx].classList.add('active');
+        if (navLinks[idx]) {navLinks[idx].classList.add('active');}
       });
     },
     { rootMargin: '-40% 0px -50% 0px' }
@@ -260,7 +294,7 @@ function initNavActiveState() {
 
   NAV_SECTION_IDS.forEach((id) => {
     const el = document.getElementById(id);
-    if (el) _navObserver.observe(el);
+    if (el) {_navObserver.observe(el);}
   });
 }
 
@@ -271,10 +305,12 @@ function initNavActiveState() {
 /**
  * Smoothly scroll to a section by its ID and track the event.
  * @param {string} sectionId - The HTML element ID to scroll to
+ * @returns {void}
+ * @fires gtag#section_click
  */
 function scrollSection(sectionId) {
   const el = document.getElementById(sectionId);
-  if (!el) return;
+  if (!el) {return;}
 
   el.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
@@ -294,18 +330,20 @@ function scrollSection(sectionId) {
  * Cycle through the LANGUAGES array, updating the header label and
  * the chat language dropdown, and dispatching a custom event so other
  * modules can react.
+ * @returns {void}
+ * @fires gtag#language_switch
  */
 function cycleLang() {
   _langIndex = (_langIndex + 1) % LANGUAGES.length;
   const lang = LANGUAGES[_langIndex];
 
-  // Update header button label
-  const display = document.getElementById('lang-display');
-  if (display) display.textContent = lang.label;
+  // Update header button label (use cached ref)
+  _langDisplayEl = _langDisplayEl || document.getElementById('lang-display');
+  if (_langDisplayEl) {_langDisplayEl.textContent = lang.label;}
 
-  // Update chat language select
-  const select = document.getElementById('chat-lang');
-  if (select) select.value = lang.code;
+  // Update chat language select (use cached ref)
+  _chatLangEl = _chatLangEl || document.getElementById('chat-lang');
+  if (_chatLangEl) {_chatLangEl.value = lang.code;}
 
   // Update <html lang> attribute for screen readers
   document.documentElement.lang = lang.code;
@@ -347,5 +385,5 @@ function initUI() {
 
   // Animate hero fan counter
   const fanEl = document.getElementById('stat-fans');
-  if (fanEl) animateCounter(fanEl, 87432);
+  if (fanEl) {animateCounter(fanEl, 87432);}
 }

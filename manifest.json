@@ -1,0 +1,40 @@
+{
+  "name": "FIFA 2026 Smart Stadium AI Hub",
+  "short_name": "StadiumAI",
+  "description": "GenAI-powered smart stadium assistant for FIFA World Cup 2026",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0e1528",
+  "theme_color": "#00d4ff",
+  "orientation": "any",
+  "lang": "en",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏟️</text></svg>",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["sports", "utilities", "navigation"],
+  "shortcuts": [
+    {
+      "name": "AI Assistant",
+      "short_name": "Ask AI",
+      "description": "Open the Gemini AI stadium assistant",
+      "url": "/#ai-section"
+    },
+    {
+      "name": "Crowd Map",
+      "short_name": "Crowd",
+      "description": "View live crowd density map",
+      "url": "/#crowd-section"
+    },
+    {
+      "name": "Navigation",
+      "short_name": "Navigate",
+      "description": "Find your way around the stadium",
+      "url": "/#nav-section"
+    }
+  ]
+}

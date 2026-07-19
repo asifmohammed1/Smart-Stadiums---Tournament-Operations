@@ -3,7 +3,7 @@
  *               detail panel, AI overflow recommendations, and live metrics.
  * @module crowd
  * @author Asif | AntiGravity
- * @version 2.0.0
+ * @version 2.2.0
  */
 
 'use strict';
@@ -55,29 +55,38 @@ const ZONE_STYLES = Object.freeze({
 });
 
 /**
+ * Map zone style icon to readable status label.
+ * Hoisted to module scope to avoid re-creation on every showZoneInfo call.
+ * @type {Readonly<Record<string, string>>}
+ * @readonly
+ */
+const STATUS_LABELS = Object.freeze({
+  '🚨': 'Critical',
+  '⚠️': 'Moderate',
+  '✅': 'Low',
+  '👑': 'VIP',
+  'ℹ️': 'Normal',
+});
+
+/**
  * Render zone details into the info panel when a SVG zone is clicked.
  * Uses only safe DOM APIs (no innerHTML with user data).
  *
  * @param {string} zoneName   - Display name of the clicked zone
  * @param {string} pctString  - Occupancy string e.g. "72%"
  * @param {string} colorKey   - Key into ZONE_STYLES
+ * @returns {void}
+ * @fires gtag#zone_click
  */
-function showZoneInfo(zoneName, pctString, colorKey) {
-  const panel = document.getElementById('zone-info-panel');
-  if (!panel) return;
-
-  const style = ZONE_STYLES[colorKey] || ZONE_STYLES.cyan;
-  const pct   = parseInt(pctString, 10) || 0;
-
-  // Clear existing content safely (no HTML parser involved)
-  panel.replaceChildren();
-
-  // Build card using DOM APIs only
-  const card = document.createElement('div');
-  card.className = 'card';
-  card.style.borderColor = style.borderColor;
-
-  // Header row
+/**
+ * Helper to build the header row for the zone info card.
+ * @param {string} zoneName - Display name of the zone
+ * @param {string} pctString - Occupancy percentage string
+ * @param {any} style - Zone style configuration
+ * @param {number} pct - Numeric occupancy value
+ * @returns {HTMLDivElement} Configured header row element
+ */
+function createZoneHeader(zoneName, pctString, style, pct) {
   const headerRow = document.createElement('div');
   headerRow.style.cssText = 'display:flex;align-items:center;gap:10px;margin-bottom:12px';
 
@@ -87,9 +96,6 @@ function showZoneInfo(zoneName, pctString, colorKey) {
   iconEl.style.fontSize = '20px';
 
   const titleGroup = document.createElement('div');
-
-  /** Map icon key to readable status label — avoids emoji comparison anti-pattern */
-  const STATUS_LABELS = { '🚨': 'Critical', '⚠️': 'Moderate', '✅': 'Low', '👑': 'VIP', 'ℹ️': 'Normal' };
   const statusLabel = STATUS_LABELS[style.icon] || 'Normal';
 
   const titleEl = document.createElement('div');
@@ -112,6 +118,39 @@ function showZoneInfo(zoneName, pctString, colorKey) {
   headerRow.appendChild(titleGroup);
   headerRow.appendChild(pctBadge);
 
+  return headerRow;
+}
+
+/**
+ * Render zone details into the info panel when a SVG zone is clicked.
+ * Uses only safe DOM APIs (no innerHTML with user data).
+ *
+ * @param {string} zoneName   - Display name of the clicked zone
+ * @param {string} pctString  - Occupancy string e.g. "72%"
+ * @param {string} colorKey   - Key into ZONE_STYLES
+ * @returns {void}
+ * @fires gtag#zone_click
+ */
+function showZoneInfo(zoneName, pctString, colorKey) {
+  const panel = document.getElementById('zone-info-panel');
+  if (!panel) {
+    return;
+  }
+
+  const style = ZONE_STYLES[colorKey] || ZONE_STYLES.cyan;
+  const pct   = parseInt(pctString, 10) || 0;
+
+  // Clear existing content safely (no HTML parser involved)
+  panel.replaceChildren();
+
+  // Build card using DOM APIs only
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.style.borderColor = style.borderColor;
+
+  // Header row
+  const headerRow = createZoneHeader(zoneName, pctString, style, pct);
+
   // Description
   const desc = document.createElement('p');
   desc.style.cssText = 'font-size:13px;color:var(--text-muted);margin-bottom:14px';
@@ -127,8 +166,7 @@ function showZoneInfo(zoneName, pctString, colorKey) {
   track.setAttribute('aria-label', `${zoneName} occupancy: ${pct}%`);
 
   const fill = document.createElement('div');
-  fill.className = `progress-fill${style.barClass ? ' ' + style.barClass : ''}`;
-  // Set initial width to 0, animate to actual value
+  fill.className = `progress-fill${style.barClass ? ` ${style.barClass}` : ''}`;
   fill.style.width = '0%';
   track.appendChild(fill);
 
@@ -140,7 +178,9 @@ function showZoneInfo(zoneName, pctString, colorKey) {
 
   // Animate progress fill after paint
   requestAnimationFrame(() => {
-    setTimeout(() => { fill.style.width = `${pct}%`; }, 50);
+    setTimeout(() => {
+      fill.style.width = `${pct}%`;
+    }, 50);
   });
 
   showToast(`📊 Zone: ${zoneName} — ${pctString}`, 'info');
@@ -162,6 +202,8 @@ function showZoneInfo(zoneName, pctString, colorKey) {
  * In production this would dispatch to a stadium operations API.
  *
  * @param {string} actionName - Human-readable action description
+ * @returns {void}
+ * @fires gtag#ai_action
  */
 function aiRecommendAction(actionName) {
   showToast(`✅ AI Action executed: ${actionName}`, 'success');
@@ -176,6 +218,7 @@ function aiRecommendAction(actionName) {
 
 /**
  * Simulate broadcasting an alert to all staff in a zone.
+ * @returns {void}
  */
 function sendAlert() {
   showToast('📣 Alert broadcast to all South Stand staff', 'warn');
